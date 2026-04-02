@@ -1,12 +1,26 @@
-# Vibe Island OSS
+# open-vibe-island
 
-An open-source macOS notch and top-bar companion for AI coding agents.
+> 我不想在自己的电脑上运行一个闭源、付费的软件来监视我所有的生产过程。<br>
+> 所以我 build 了这个开源的版本。<br>
+>
+> To all vibe coders: 我们自己构建自己的产品。
 
-The goal is to build a native Swift app that can monitor local agent sessions, surface permission requests and questions, and jump back into the right terminal or editor context without leaving flow.
+`open-vibe-island` is an open-source macOS notch and top-bar companion for AI coding agents. It monitors local agent sessions, surfaces permission requests and questions, and helps you jump back into the right terminal or editor context without breaking flow.
+
+GitHub: <https://github.com/Octane0411/open-vibe-island>
+
+## What It Does
+
+The app is being built as a native Swift control surface for local agent workflows on macOS. The current direction is simple:
+
+- stay local-first
+- keep the terminal workflow intact
+- make approvals, questions, and session switching visible
+- bring you back to the right terminal context fast
 
 ## Status
 
-Initial native scaffold is in place. The repository now contains a buildable macOS Swift package with:
+Initial native scaffolding is in place. The repository currently contains a buildable macOS Swift package with:
 
 - `VibeIslandCore` for shared event and session state logic
 - `VibeIslandApp` for the SwiftUI and AppKit shell
@@ -14,19 +28,21 @@ Initial native scaffold is in place. The repository now contains a buildable mac
 - a local Unix-socket bridge between the app and external hook processes
 - core tests for session state transitions
 
+The repository name is now `open-vibe-island`, while the Swift modules still use the `VibeIsland` prefix for the moment.
+
 ## Product Direction
 
-- Native macOS app built with SwiftUI and AppKit where needed.
-- Local-first communication over Unix sockets or equivalent IPC.
-- Support multiple coding agents over time, starting with one narrow integration.
-- Focus on interaction, not just passive monitoring.
+- Native macOS app built with SwiftUI and AppKit where needed
+- Local-first communication over Unix sockets or equivalent IPC
+- Support multiple coding agents over time, starting with one narrow integration
+- Focus on interaction, not just passive monitoring
 
 ## Initial Milestones
 
-1. `v0.1` Single-agent MVP with real Codex hook monitoring and overlay UI.
-2. `v0.2` Approval flow hardening, terminal jump, and install automation.
-3. `v0.3` Terminal jump, multi-session state, and external display behavior.
-4. `v0.4` Multi-agent adapters and install/setup automation.
+1. `v0.1` Single-agent MVP with real Codex hook monitoring and overlay UI
+2. `v0.2` Approval flow hardening, terminal jump, and install automation
+3. `v0.3` Terminal jump, multi-session state, and external display behavior
+4. `v0.4` Multi-agent adapters and install/setup automation
 
 ## Getting Started
 
@@ -36,9 +52,9 @@ swift build
 open Package.swift
 ```
 
-Open the package in Xcode to run the macOS app target. The app now starts an empty local bridge and waits for real Codex hook events. Use `Restart Demo` in the UI if you want the old mock timeline back.
+Open the package in Xcode to run the macOS app target. The app starts a local bridge and waits for Codex hook events. Use `Restart Demo` in the UI if you want the older mock timeline back.
 
-The control center now also shows live Codex hook install status from `~/.codex`, and can install or uninstall the managed hook entries directly if it can locate a local `VibeIslandHooks` executable.
+The control center also shows live Codex hook install status from `~/.codex`, and can install or uninstall the managed hook entries directly if it can locate a local `VibeIslandHooks` executable.
 
 ## Codex Hook MVP
 
@@ -81,7 +97,7 @@ If you want to manage the files yourself, a minimal `~/.codex/hooks.json` shape 
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/you/path/to/vibe-island/.build/release/VibeIslandHooks"
+            "command": "/Users/you/path/to/open-vibe-island/.build/release/VibeIslandHooks"
           }
         ]
       }
@@ -91,7 +107,7 @@ If you want to manage the files yourself, a minimal `~/.codex/hooks.json` shape 
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/you/path/to/vibe-island/.build/release/VibeIslandHooks"
+            "command": "/Users/you/path/to/open-vibe-island/.build/release/VibeIslandHooks"
           }
         ]
       }
@@ -102,7 +118,7 @@ If you want to manage the files yourself, a minimal `~/.codex/hooks.json` shape 
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/you/path/to/vibe-island/.build/release/VibeIslandHooks"
+            "command": "/Users/you/path/to/open-vibe-island/.build/release/VibeIslandHooks"
           }
         ]
       }
@@ -113,7 +129,7 @@ If you want to manage the files yourself, a minimal `~/.codex/hooks.json` shape 
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/you/path/to/vibe-island/.build/release/VibeIslandHooks"
+            "command": "/Users/you/path/to/open-vibe-island/.build/release/VibeIslandHooks"
           }
         ]
       }
@@ -123,7 +139,7 @@ If you want to manage the files yourself, a minimal `~/.codex/hooks.json` shape 
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/you/path/to/vibe-island/.build/release/VibeIslandHooks"
+            "command": "/Users/you/path/to/open-vibe-island/.build/release/VibeIslandHooks"
           }
         ]
       }
@@ -136,7 +152,7 @@ The helper reads the Codex hook payload from `stdin`, forwards it to the app bri
 
 ## Jump Back
 
-Codex hook ingestion now captures terminal hints from the hook process environment, such as `TERM_PROGRAM`, `ITERM_SESSION_ID`, and Ghostty-specific variables. The island uses those hints to power a best-effort `Jump` action:
+Codex hook ingestion captures terminal hints from the hook process environment, such as `TERM_PROGRAM`, `ITERM_SESSION_ID`, and Ghostty-specific variables. The island uses those hints to power a best-effort `Jump` action:
 
 - store terminal-specific locators such as iTerm session id, Ghostty terminal id, and Terminal tty when available
 - focus the matching iTerm session, Ghostty terminal, or Terminal tab before falling back
@@ -145,15 +161,14 @@ Codex hook ingestion now captures terminal hints from the hook process environme
 
 ## Repository Layout
 
-- `Package.swift` Swift package entry point for the app and shared core module.
-- `Sources/VibeIslandCore` Shared models, events, mock scenario, and session state reducer.
-- `Sources/VibeIslandCore` also contains the wire protocol, local socket clients, Codex hook models, hook installer logic, and bridge server.
-- `Sources/VibeIslandHooks` Hook executable for Codex.
-- `Sources/VibeIslandSetup` Installer CLI for Codex feature and hook setup.
-- `Sources/VibeIslandApp` SwiftUI app shell, menu bar entry, and overlay panel controller.
-- `Tests/VibeIslandCoreTests` Core logic tests.
-- `docs/product.md` Product scope, MVP boundary, and roadmap.
-- `docs/architecture.md` System shape, event flow, and engineering decisions.
+- `Package.swift` Swift package entry point for the app and shared core module
+- `Sources/VibeIslandCore` Shared models, events, mock scenario, session state reducer, wire protocol, hook models, installer logic, and bridge server
+- `Sources/VibeIslandHooks` Hook executable for Codex
+- `Sources/VibeIslandSetup` Installer CLI for Codex feature and hook setup
+- `Sources/VibeIslandApp` SwiftUI app shell, menu bar entry, and overlay panel controller
+- `Tests/VibeIslandCoreTests` Core logic tests
+- `docs/product.md` Product scope, MVP boundary, and roadmap
+- `docs/architecture.md` System shape, event flow, and engineering decisions
 
 ## Principles
 
@@ -161,8 +176,8 @@ Codex hook ingestion now captures terminal hints from the hook process environme
 - Build narrow slices end to end before adding more integrations.
 - Prefer native platform APIs over cross-platform abstractions.
 - Treat hooks, IPC, and focus-switching behavior as first-class engineering concerns.
-- Keep the Terminal entrypoint unchanged for users. The app should attach to Codex, not replace it.
+- Keep the terminal entrypoint unchanged for users. The app should attach to Codex, not replace it.
 
 ## Next Step
 
-Polish the Codex hook adapter, add installation automation, and start wiring terminal jump behavior.
+Polish the Codex hook adapter, harden install flow, and keep improving terminal jump behavior.
