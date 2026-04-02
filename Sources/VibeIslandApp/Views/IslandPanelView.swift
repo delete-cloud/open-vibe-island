@@ -202,7 +202,7 @@ struct MenuBarContentView: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Button("Run Demo Acceptance") {
+            Button("Load Demo Acceptance") {
                 model.startAcceptanceDemo()
             }
 
@@ -212,7 +212,7 @@ struct MenuBarContentView: View {
                 model.toggleOverlay()
             }
 
-            Button("Restart Demo") {
+            Button("Load Demo Sessions") {
                 model.resetDemo()
             }
 

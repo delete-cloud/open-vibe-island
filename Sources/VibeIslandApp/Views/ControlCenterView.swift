@@ -35,7 +35,7 @@ struct ControlCenterView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
-                Button("Restart Demo") {
+                Button("Load Demo Sessions") {
                     model.resetDemo()
                 }
                 .buttonStyle(.bordered)
@@ -47,21 +47,24 @@ struct ControlCenterView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Sessions")
                     .font(.headline)
-
-                ForEach(model.sessions) { session in
-                    Button {
-                        model.select(sessionID: session.id)
-                    } label: {
-                        SessionRowView(
-                            session: session,
-                            isSelected: session.id == model.focusedSession?.id
-                        )
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 12) {
+                        ForEach(model.sessions) { session in
+                            Button {
+                                model.select(sessionID: session.id)
+                            } label: {
+                                SessionRowView(
+                                    session: session,
+                                    isSelected: session.id == model.focusedSession?.id
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .frame(maxWidth: 360, alignment: .topLeading)
     }
@@ -171,7 +174,7 @@ struct ControlCenterView: View {
                 }
                 .buttonStyle(.bordered)
 
-                Button("Run Demo Acceptance") {
+                Button("Load Demo Acceptance") {
                     model.startAcceptanceDemo()
                 }
                 .buttonStyle(.borderedProminent)
@@ -407,9 +410,17 @@ private struct SessionRowView: View {
                     Text(session.title)
                         .font(.headline)
                     Spacer(minLength: 12)
-                    Text(session.tool.shortName)
-                        .font(.caption2.weight(.bold))
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: 6) {
+                        if session.isDemoSession {
+                            Text("DEMO")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(.orange)
+                        }
+
+                        Text(session.tool.shortName)
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Text(session.spotlightPrimaryText)

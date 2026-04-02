@@ -106,6 +106,27 @@ struct SessionStateTests {
     }
 
     @Test
+    func preservesSessionOriginFromStartEvent() {
+        var state = SessionState()
+
+        state.apply(
+            .sessionStarted(
+                SessionStarted(
+                    sessionID: "demo-session-1",
+                    title: "Demo session",
+                    tool: .codex,
+                    origin: .demo,
+                    summary: "Demo data",
+                    timestamp: .now
+                )
+            )
+        )
+
+        #expect(state.session(id: "demo-session-1")?.origin == .demo)
+        #expect(state.session(id: "demo-session-1")?.isDemoSession == true)
+    }
+
+    @Test
     func bridgeEnvelopeRoundTripsThroughLineCodec() throws {
         let envelope = BridgeEnvelope.event(
             .permissionRequested(

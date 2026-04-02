@@ -24,6 +24,7 @@ public struct CodexSessionMetadata: Equatable, Codable, Sendable {
 public struct CodexTrackedSessionRecord: Equatable, Codable, Sendable {
     public var sessionID: String
     public var title: String
+    public var origin: SessionOrigin?
     public var summary: String
     public var phase: SessionPhase
     public var updatedAt: Date
@@ -33,6 +34,7 @@ public struct CodexTrackedSessionRecord: Equatable, Codable, Sendable {
     public init(
         sessionID: String,
         title: String,
+        origin: SessionOrigin? = nil,
         summary: String,
         phase: SessionPhase,
         updatedAt: Date,
@@ -41,6 +43,7 @@ public struct CodexTrackedSessionRecord: Equatable, Codable, Sendable {
     ) {
         self.sessionID = sessionID
         self.title = title
+        self.origin = origin
         self.summary = summary
         self.phase = phase
         self.updatedAt = updatedAt
@@ -52,6 +55,7 @@ public struct CodexTrackedSessionRecord: Equatable, Codable, Sendable {
         self.init(
             sessionID: session.id,
             title: session.title,
+            origin: session.origin,
             summary: session.summary,
             phase: session.phase,
             updatedAt: session.updatedAt,
@@ -65,12 +69,19 @@ public struct CodexTrackedSessionRecord: Equatable, Codable, Sendable {
             id: sessionID,
             title: title,
             tool: .codex,
+            origin: origin,
             phase: phase,
             summary: summary,
             updatedAt: updatedAt,
             jumpTarget: jumpTarget,
             codexMetadata: codexMetadata
         )
+    }
+}
+
+public extension CodexTrackedSessionRecord {
+    var shouldRestoreToLiveState: Bool {
+        origin != .demo && !MockAgentScenario.sessionIDs.contains(sessionID)
     }
 }
 

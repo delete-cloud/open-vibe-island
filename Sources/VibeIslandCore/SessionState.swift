@@ -48,6 +48,7 @@ public struct SessionState: Equatable, Sendable {
                 id: payload.sessionID,
                 title: payload.title,
                 tool: payload.tool,
+                origin: payload.origin,
                 phase: .running,
                 summary: payload.summary,
                 updatedAt: payload.timestamp,

@@ -28,6 +28,11 @@ public enum AgentTool: String, CaseIterable, Codable, Sendable {
     }
 }
 
+public enum SessionOrigin: String, Codable, Sendable {
+    case live
+    case demo
+}
+
 public enum SessionPhase: String, Codable, Sendable {
     case running
     case waitingForApproval
@@ -127,6 +132,7 @@ public struct AgentSession: Equatable, Identifiable, Codable, Sendable {
     public var id: String
     public var title: String
     public var tool: AgentTool
+    public var origin: SessionOrigin?
     public var phase: SessionPhase
     public var summary: String
     public var updatedAt: Date
@@ -139,6 +145,7 @@ public struct AgentSession: Equatable, Identifiable, Codable, Sendable {
         id: String,
         title: String,
         tool: AgentTool,
+        origin: SessionOrigin? = nil,
         phase: SessionPhase,
         summary: String,
         updatedAt: Date,
@@ -150,6 +157,7 @@ public struct AgentSession: Equatable, Identifiable, Codable, Sendable {
         self.id = id
         self.title = title
         self.tool = tool
+        self.origin = origin
         self.phase = phase
         self.summary = summary
         self.updatedAt = updatedAt
@@ -157,5 +165,15 @@ public struct AgentSession: Equatable, Identifiable, Codable, Sendable {
         self.questionPrompt = questionPrompt
         self.jumpTarget = jumpTarget
         self.codexMetadata = codexMetadata
+    }
+}
+
+public extension AgentSession {
+    var isDemoSession: Bool {
+        origin == .demo
+    }
+
+    var isTrackedLiveCodexSession: Bool {
+        tool == .codex && !isDemoSession
     }
 }

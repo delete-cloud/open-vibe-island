@@ -234,7 +234,7 @@ final class AppModel {
     }
 
     func resetDemo() {
-        send(.resetDemo, userMessage: "Resetting bridge demo state.")
+        send(.resetDemo, userMessage: "Loading demo sessions into the diagnostic view.")
     }
 
     func select(sessionID: String) {
@@ -335,7 +335,7 @@ final class AppModel {
             toggleOverlay()
         }
         resetDemo()
-        lastActionMessage = "Acceptance demo started. The overlay is visible and the demo timeline has been reset."
+        lastActionMessage = "Demo acceptance loaded. The overlay is visible and the diagnostic timeline was reset."
     }
 
     private func send(_ command: BridgeCommand, userMessage: String) {
@@ -408,8 +408,15 @@ final class AppModel {
 
     private func restorePersistedCodexSessions() {
         do {
-            let records = try codexSessionStore.load()
-                .filter { $0.updatedAt >= Date.now.addingTimeInterval(-86_400) }
+            let loadedRecords = try codexSessionStore.load()
+            let records = loadedRecords.filter {
+                $0.updatedAt >= Date.now.addingTimeInterval(-86_400) && $0.shouldRestoreToLiveState
+            }
+
+            if records != loadedRecords {
+                try? codexSessionStore.save(records)
+            }
+
             guard !records.isEmpty else {
                 return
             }
@@ -443,7 +450,7 @@ final class AppModel {
         codexSessionPersistenceTask?.cancel()
 
         let records = state.sessions
-            .filter { $0.tool == .codex && $0.updatedAt >= Date.now.addingTimeInterval(-86_400) }
+            .filter { $0.isTrackedLiveCodexSession && $0.updatedAt >= Date.now.addingTimeInterval(-86_400) }
             .map(CodexTrackedSessionRecord.init(session:))
         let store = codexSessionStore
 
@@ -456,6 +463,9 @@ final class AppModel {
     private func describe(_ event: AgentEvent) -> String {
         switch event {
         case let .sessionStarted(payload):
+            if payload.origin == .demo {
+                return "Demo session started: \(payload.title)"
+            }
             return "Session started: \(payload.title)"
         case let .activityUpdated(payload):
             return payload.summary

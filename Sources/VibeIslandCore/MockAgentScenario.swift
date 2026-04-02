@@ -1,6 +1,12 @@
 import Foundation
 
 public enum MockAgentScenario {
+    public static let sessionIDs: Set<String> = [
+        "claude-fix-auth-bug",
+        "codex-backend-server",
+        "gemini-optimize-queries",
+    ]
+
     public static let initialEvents: [AgentEvent] = {
         let base = Date.now.addingTimeInterval(-300)
 
@@ -10,6 +16,7 @@ public enum MockAgentScenario {
                     sessionID: "claude-fix-auth-bug",
                     title: "fix auth bug",
                     tool: .claudeCode,
+                    origin: .demo,
                     summary: "Inspecting auth middleware and reproducing the failure.",
                     timestamp: base,
                     jumpTarget: JumpTarget(
@@ -24,6 +31,7 @@ public enum MockAgentScenario {
                     sessionID: "codex-backend-server",
                     title: "backend server",
                     tool: .codex,
+                    origin: .demo,
                     summary: "Building REST endpoints and wiring tests.",
                     timestamp: base.addingTimeInterval(-90),
                     jumpTarget: JumpTarget(
@@ -38,6 +46,7 @@ public enum MockAgentScenario {
                     sessionID: "gemini-optimize-queries",
                     title: "optimize queries",
                     tool: .geminiCLI,
+                    origin: .demo,
                     summary: "Profiling slow queries in the read path.",
                     timestamp: base.addingTimeInterval(-180),
                     jumpTarget: JumpTarget(

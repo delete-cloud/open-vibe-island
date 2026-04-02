@@ -18,6 +18,7 @@ struct CodexSessionTrackingTests {
             CodexTrackedSessionRecord(
                 sessionID: "codex-session-1",
                 title: "Codex · vibe-island",
+                origin: .live,
                 summary: "Inspecting rollout watcher.",
                 phase: .running,
                 updatedAt: Date(timeIntervalSince1970: 1_000),
@@ -39,6 +40,38 @@ struct CodexSessionTrackingTests {
 
         #expect(reloaded == records)
         #expect(reloaded.first?.session.codexMetadata?.transcriptPath == "/tmp/rollout.jsonl")
+        #expect(reloaded.first?.session.origin == .live)
+    }
+
+    @Test
+    func codexTrackedSessionRecordRejectsDemoAndLegacyMockSessions() {
+        let liveRecord = CodexTrackedSessionRecord(
+            sessionID: "codex-live-1",
+            title: "Codex · live",
+            origin: .live,
+            summary: "Working",
+            phase: .running,
+            updatedAt: .now
+        )
+        let demoRecord = CodexTrackedSessionRecord(
+            sessionID: "codex-demo-1",
+            title: "Codex · demo",
+            origin: .demo,
+            summary: "Working",
+            phase: .running,
+            updatedAt: .now
+        )
+        let legacyMockRecord = CodexTrackedSessionRecord(
+            sessionID: "codex-backend-server",
+            title: "backend server",
+            summary: "REST endpoints built. Tests are green.",
+            phase: .completed,
+            updatedAt: .now
+        )
+
+        #expect(liveRecord.shouldRestoreToLiveState)
+        #expect(!demoRecord.shouldRestoreToLiveState)
+        #expect(!legacyMockRecord.shouldRestoreToLiveState)
     }
 
     @Test

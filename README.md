@@ -52,7 +52,7 @@ swift build
 open Package.swift
 ```
 
-Open the package in Xcode to run the macOS app target. The app now starts an empty local bridge and waits for real Codex hook events. Use `Restart Demo` in the UI if you want the old mock timeline back.
+Open the package in Xcode to run the macOS app target. The app now starts an empty local bridge and waits for real Codex hook events. Use `Load Demo Sessions` in the UI only when you intentionally want the old mock timeline in the diagnostic view.
 
 The control center now also shows live Codex hook install status from `~/.codex`, and can install or uninstall the managed hook entries directly if it can locate a local `VibeIslandHooks` executable.
 
@@ -67,7 +67,7 @@ The current `v0.1` build is ready for a first acceptance pass. The shortest path
 5. Start `codex` from your terminal and wait for the first session row to appear.
 6. Trigger one approval or one jump-back action and confirm the island responds.
 
-You can also click `Run Demo Acceptance` in the app to sanity-check the UI flow before starting a real Codex session.
+You can also click `Load Demo Acceptance` in the app to sanity-check the UI flow before starting a real Codex session.
 
 ## Codex Hook MVP
 
